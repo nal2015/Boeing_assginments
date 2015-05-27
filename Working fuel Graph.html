@@ -148,7 +148,7 @@ function animateCircle() {
     var count = 0;
     window.setInterval(function() {
       count = (count + 1) % 200;
-      datafueltime.addRow([count,(16*91.3749)+(count*42.296214)+993.381])
+      datafueltime.addRow([(count*1.6),((16*91.3749)+(count*42.296214)+993.381)])
       chartfueltime.draw(datafueltime, chartfueloptions);
 
       var icons = line.get('icons');
