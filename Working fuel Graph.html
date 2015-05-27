@@ -130,7 +130,8 @@ function initialize() {
   
 }
 
-
+var datafueltime;
+var chartfueltime;
 
 // Use the DOM setInterval() function to change the offset of the symbol
 // at fixed intervals.
@@ -207,7 +208,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
     google.setOnLoadCallback(drawChart);
 
   function drawChart() {
-        var data = google.visualization.arrayToDataTable([
+        datafueltime = google.visualization.arrayToDataTable([
         ['Time','Fuel Burned (kg)'],
         [0,  0],
         [19, 271.32],
@@ -234,7 +235,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
       var chart = new google.visualization.LineChart(document.getElementById('chart_divs'));
 
-      chart.draw(data, options);
+      chart.draw(datafueltime, options);
+      datafueltime.addRow([300,8000])
+      chart.draw(datafueltime, options);
     }
 
     </script>
