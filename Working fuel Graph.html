@@ -132,6 +132,7 @@ function initialize() {
 
 var datafueltime;
 var chartfueltime;
+var chartfueloptions;
 
 // Use the DOM setInterval() function to change the offset of the symbol
 // at fixed intervals.
@@ -139,6 +140,8 @@ function animateCircle() {
     var count = 0;
     window.setInterval(function() {
       count = (count + 1) % 200;
+      datafueltime.addRow([count,8000])
+      chartfueltime.draw(datafueltime, chartfueloptions);
 
       var icons = line.get('icons');
       icons[0].offset = (count / 2) + '%';
@@ -222,7 +225,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         [320.9, 13208.248]
       ]);
 
-      var options = {
+      var chartfueloptions = {
          title: 'Fuel Usage (kg) over Time (nm)',
          titleTextStyle: {
           fontSize: 16
@@ -233,11 +236,10 @@ google.maps.event.addDomListener(window, 'load', initialize);
         
       };
 
-      var chart = new google.visualization.LineChart(document.getElementById('chart_divs'));
+      chartfueltime = new google.visualization.LineChart(document.getElementById('chart_divs'));
 
-      chart.draw(datafueltime, options);
-      datafueltime.addRow([300,8000])
-      chart.draw(datafueltime, options);
+      chartfueltime.draw(datafueltime, chartfueloptions);
+    
     }
 
     </script>
