@@ -132,21 +132,29 @@ function initialize() {
 
 var datafueltime;
 var chartfueltime;
-var chartfueloptions;
-
+ var chartfueloptions = {
+         title: 'Fuel Usage (kg) over Time (nm)',
+         titleTextStyle: {
+          fontSize: 16
+         },
+        hAxis: {title: 'Time (min)', minValue: 0, maxValue: 325},
+        vAxis: {title: 'Fuel Used (kg)', minValue: 0, maxValue: 12500},
+        crosshair: { trigger: 'both' },
+        
+      };
 // Use the DOM setInterval() function to change the offset of the symbol
 // at fixed intervals.
 function animateCircle() {
     var count = 0;
     window.setInterval(function() {
       count = (count + 1) % 200;
-      datafueltime.addRow([count,8000])
+      datafueltime.addRow([count,(16*91.3749)+(count*42.296214)+993.381])
       chartfueltime.draw(datafueltime, chartfueloptions);
 
       var icons = line.get('icons');
       icons[0].offset = (count / 2) + '%';
       line.set('icons', icons);
-  }, 170);
+  }, 320);
 }
 //comment 1
 
