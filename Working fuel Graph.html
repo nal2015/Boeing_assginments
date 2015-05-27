@@ -130,75 +130,7 @@ function initialize() {
   
 }
 
-var DistanceFromStart = function (/*latlng*/ markerPosition) {
 
-    var path = this.polyline.getPath();      
-    var minValue = Infinity;
-    var minIndex = 0;
-    var x = markerPosition.lat();
-    var y = markerPosition.lng();
-
-    for (var i = 0; i < path.getLength() - 1; i++) {
-
-        var x1 = path.getAt(i).lat();
-        var y1 = path.getAt(i).lng();
-
-        var x2 = path.getAt(i + 1).lat();
-        var y2 = path.getAt(i + 1).lng();
-
-        var dist = pDistance(x, y, x1, y1, x2, y2);
-
-        if (dist < minValue) {
-            minIndex = i;
-            minValue = dist;
-        }
-    }      
-
-    var gdist = google.maps.geometry.spherical.computeDistanceBetween;
-    var dinit = gdist(markerPosition, path.getAt(minIndex));
-    var dtotal = gdist(path.getAt(minIndex), path.getAt(minIndex + 1));
-
-    var distanceFromStart = 0;
-
-    for (var i = 0; i <= minIndex - 1; i++) {
-        distanceFromStart += gdist(path.getAt(i), path.getAt(i + 1));
-    }
-
-    distanceFromStart += dtotal * dinit / dtotal;
-
-    return distanceFromStart;
-}
-
-function pDistance(x, y, x1, y1, x2, y2) {
-
-    var A = x - x1;
-    var B = y - y1;
-    var C = x2 - x1;
-    var D = y2 - y1;
-
-    var dot = A * C + B * D;
-    var len_sq = C * C + D * D;
-    var param = dot / len_sq;
-
-    var xx, yy;
-
-    if (param < 0 || (x1 == x2 && y1 == y2)) {
-        xx = x1;
-        yy = y1;
-    }
-    else if (param > 1) {
-        xx = x2;
-        yy = y2;
-    }
-    else {
-        xx = x1 + param * C;
-        yy = y1 + param * D;
-    }
-
-    var dx = x - xx;
-    var dy = y - yy;
-    return Math.sqrt(dx * dx + dy * dy);
-}
 
 // Use the DOM setInterval() function to change the offset of the symbol
 // at fixed intervals.
@@ -212,7 +144,7 @@ function animateCircle() {
       line.set('icons', icons);
   }, 170);
 }
-
+//comment 1
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
@@ -276,7 +208,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
   function drawChart() {
         var data = google.visualization.arrayToDataTable([
-        ['Time','Fuel Burned'],
+        ['Time','Fuel Burned (kg)'],
         [0,  0],
         [19, 271.32],
         [19.7, 360.024],
