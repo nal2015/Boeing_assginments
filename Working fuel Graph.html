@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Fuel Information</title>
+    <style>
+      #map-canvas {
+        height: 650px;
+        width: 55%;
+        margin-right: 0.5%;
+        padding: 0px;
+        float: left;
+        border: solid;
+      }
+      #chart_div {
+        height: 325px;
+         width: 42%;
+         padding: 0px;
+         float: left;
+      }
+      #chart_divs {
+        height: 325px;
+        width: 42%;
+        float: left;
+        border: dashed;
+        border-width: 1px;
+
+      }
+
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script>
+// This example adds an animated symbol to a polyline.
+
+var line;
+
+function initialize() {
+  var mapOptions = {
+    center: new google.maps.LatLng(39.0000 , -98.5000  ),
+    zoom: 4,
+    mapTypeId: google.maps.MapTypeId.TERRAIN
+  };
+
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+   var lineCoordinates = [
+    new google.maps.LatLng(47.5300, -122.3019 ),
+    new google.maps.LatLng(42.4457, -73.4807)
+  ];
+
+
+
+  // Define the symbol, using one of the predefined paths ('CRICLE')
+  // supplied by the Google Maps JavaScript API.
+  var lineSymbol = {
+    path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+    scale: 2.75,
+    strokeColor: '#283'
+  };
+
+  // Create the polyline and add the symbol to it via the 'icons' property.
+
+   line = new google.maps.Polyline({
+    path: lineCoordinates,
+    icons: [{
+      icon: lineSymbol,
+      offset: '20%'
+    }],
+    geodesic: true,
+    map: map
+  });  animateCircle();
+
+
+
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Boeing Field</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Boeing Field</b>, is an airport in King County operated primairly ' +
+      'by the Boeing Company. Planes undergo final testing and there are '+
+      'are many Boeing offices up and down the length of the airport '+
+      'the Museum of Flight is located at the South end of Boeing Field and '+
+      'benifits from this proximity. </p>'+
+      '</div>'+
+      '</div>';
+
+  var infowindow = new google.maps.InfoWindow({
+      content: contentString
+  });
+
+  var marker = new google.maps.Marker({
+      position: new google.maps.LatLng(47.5300, -122.3019 ),
+      map: map,
+      title: 'Boeing Field'
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map,marker);
+  });
+
+  var contentString1 = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Boeing Field</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Albany International Airport</b>, is a public airport seven miles (11 km) '  + 
+      'northwest of Albany, in Albany County, New York, United States. It is owned by the ' +
+       'Albany County Airport Authority. It is an Airport of Entry in the town of' +
+        'Colonie. It was built on the site of the Shaker settlement about 6 miles (10 km) ' +
+        'north of Albany and stretching north to the hamlet of Verdoy. The airport is below ' +
+        'class C airspace. </p>'+
+      '</div>'+
+      '</div>';
+
+  var infowindow = new google.maps.InfoWindow({
+      content: contentString1
+  });
+
+  var marker1 = new google.maps.Marker({
+      position: new google.maps.LatLng(42.4457, -73.4807),
+      map: map,
+      title: 'Albany International Airport'
+  });
+  google.maps.event.addListener(marker1, 'click', function() {
+    infowindow.open(map,marker1);
+  });
+  
+  
+}
+
+var DistanceFromStart = function (/*latlng*/ markerPosition) {
+
+    var path = this.polyline.getPath();      
+    var minValue = Infinity;
+    var minIndex = 0;
+    var x = markerPosition.lat();
+    var y = markerPosition.lng();
+
+    for (var i = 0; i < path.getLength() - 1; i++) {
+
+        var x1 = path.getAt(i).lat();
+        var y1 = path.getAt(i).lng();
+
+        var x2 = path.getAt(i + 1).lat();
+        var y2 = path.getAt(i + 1).lng();
+
+        var dist = pDistance(x, y, x1, y1, x2, y2);
+
+        if (dist < minValue) {
+            minIndex = i;
+            minValue = dist;
+        }
+    }      
+
+    var gdist = google.maps.geometry.spherical.computeDistanceBetween;
+    var dinit = gdist(markerPosition, path.getAt(minIndex));
+    var dtotal = gdist(path.getAt(minIndex), path.getAt(minIndex + 1));
+
+    var distanceFromStart = 0;
+
+    for (var i = 0; i <= minIndex - 1; i++) {
+        distanceFromStart += gdist(path.getAt(i), path.getAt(i + 1));
+    }
+
+    distanceFromStart += dtotal * dinit / dtotal;
+
+    return distanceFromStart;
+}
+
+function pDistance(x, y, x1, y1, x2, y2) {
+
+    var A = x - x1;
+    var B = y - y1;
+    var C = x2 - x1;
+    var D = y2 - y1;
+
+    var dot = A * C + B * D;
+    var len_sq = C * C + D * D;
+    var param = dot / len_sq;
+
+    var xx, yy;
+
+    if (param < 0 || (x1 == x2 && y1 == y2)) {
+        xx = x1;
+        yy = y1;
+    }
+    else if (param > 1) {
+        xx = x2;
+        yy = y2;
+    }
+    else {
+        xx = x1 + param * C;
+        yy = y1 + param * D;
+    }
+
+    var dx = x - xx;
+    var dy = y - yy;
+    return Math.sqrt(dx * dx + dy * dy);
+}
+
+// Use the DOM setInterval() function to change the offset of the symbol
+// at fixed intervals.
+function animateCircle() {
+    var count = 0;
+    window.setInterval(function() {
+      count = (count + 1) % 200;
+
+      var icons = line.get('icons');
+      icons[0].offset = (count / 2) + '%';
+      line.set('icons', icons);
+  }, 170);
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+ <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1.1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Distance',  ' 737-400 Predicted Fuel Usage',  '737-400 Actual Fuel Usage', 'A319 Predicted Fuel Usage',  'A319 Actual Fuel Usage'],
+          [ 0,      993.318, 993.318, 826.451, 826.451],
+          [ 125,    1741.381, 1921.915, 1763.4033, 1381.021],
+          [ 250,    2489.381, 2700.332, 2501.044, 1935.591],
+          [ 500,    3985.381, 4120.115, 3508.657, 3044.731],
+          [ 750,    5481.381, 5617.576, 4595.29, 4153.871],
+          [ 1000,   6977.381, 7099.183, 5702.591, 5263.011],
+          [ 1500,  9969.381, 10221.879, 7983.489, 7481.291],
+          [ 2000,  12961.38, 13208.00, 10202.213, 9699.571]
+        ]);
+
+        var options = {
+          
+        title: 'Fuel Usage (kg) over Distance (nm)',
+        hAxis: {title: 'Distance (nm)', minValue: 0, maxValue: 2000},
+        vAxis: {title: 'Fuel Used (kg)', minValue: 0, maxValue: 13000},
+        crosshair: { trigger: 'both' },
+        titleTextStyle: {
+          fontSize: 16
+         },
+        trendlines: {
+          0: {
+            visibleInLegend: false,
+            },
+          2: {
+            visibleInLegend: false,
+          }
+         },
+        series: {
+          0: {pointSize: 0},
+          1: {pointSize: 5},
+          2: {pointSize: 0},
+          3: {pointSize: 5},
+        },
+        colors: [ '#99B2E5', '#DC3912', '#989898', '#878787'
+        ]
+        };
+
+
+        var chart = new google.visualization.ScatterChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+
+    };
+  
+    </script>
+
+   <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    google.load('visualization', '1.1', {packages: ['corechart']});
+    google.setOnLoadCallback(drawChart);
+
+  function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+        ['Time','Fuel Burned'],
+        [0,  0],
+        [19, 271.32],
+        [19.7, 360.024],
+        [21.9, 591.816],
+        [36.8, 1902.416],
+        [295.1, 12802.416],
+        [309.9, 12957.568],
+        [313.2, 13083.168],
+        [313.9, 13108.288],
+        [320.9, 13208.248]
+      ]);
+
+      var options = {
+         title: 'Fuel Usage (kg) over Time (nm)',
+         titleTextStyle: {
+          fontSize: 16
+         },
+        hAxis: {title: 'Time (min)', minValue: 0, maxValue: 325},
+        vAxis: {title: 'Fuel Used (kg)', minValue: 0, maxValue: 12500},
+        crosshair: { trigger: 'both' },
+        
+      };
+
+      var chart = new google.visualization.LineChart(document.getElementById('chart_divs'));
+
+      chart.draw(data, options);
+    }
+
+    </script>
+
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+    <div id="chart_div"></div>
+    <div id="chart_divs"></div>
+  </body>
+</html>
