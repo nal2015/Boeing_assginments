@@ -10,6 +10,7 @@
         color: white;
         text-align: center;
         padding: 5px;
+        border: 2px;
 
       }
 
@@ -55,7 +56,7 @@ function initialize() {
 
    var lineCoordinates = [
     new google.maps.LatLng(47.5300, -122.3019 ),
-    new google.maps.LatLng(42.4457, -73.4807)
+    new google.maps.LatLng(42.4457, -73.4807) 
   ];
 
 
@@ -81,7 +82,6 @@ function initialize() {
   });  animateCircle();
 
 
-
   var contentString = '<div id="content">'+
       '<div id="siteNotice">'+
       '</div>'+
@@ -92,6 +92,20 @@ function initialize() {
       'are many Boeing offices up and down the length of the airport '+
       'the Museum of Flight is located at the South end of Boeing Field and '+
       'benifits from this proximity. </p>'+
+      '</div>'+
+      '</div>';
+
+ var contentString1 = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1 id="firstHeading" class="firstHeading">Albany International Airport</h1>'+
+      '<div id="bodyContent">'+
+      '<p><b>Albany International Airport</b>, is a public airport seven miles (11 km) '  + 
+      'northwest of Albany, in Albany County, New York, United States. It is owned by the ' +
+       'Albany County Airport Authority. It is an Airport of Entry in the town of' +
+        'Colonie. It was built on the site of the Shaker settlement about 6 miles (10 km) ' +
+        'north of Albany and stretching north to the hamlet of Verdoy. The airport is below ' +
+        'class C airspace. </p>'+
       '</div>'+
       '</div>';
 
@@ -108,21 +122,9 @@ function initialize() {
     infowindow.open(map,marker);
   });
 
-  var contentString1 = '<div id="content">'+
-      '<div id="siteNotice">'+
-      '</div>'+
-      '<h1 id="firstHeading" class="firstHeading">Albany International Airport</h1>'+
-      '<div id="bodyContent">'+
-      '<p><b>Albany International Airport</b>, is a public airport seven miles (11 km) '  + 
-      'northwest of Albany, in Albany County, New York, United States. It is owned by the ' +
-       'Albany County Airport Authority. It is an Airport of Entry in the town of' +
-        'Colonie. It was built on the site of the Shaker settlement about 6 miles (10 km) ' +
-        'north of Albany and stretching north to the hamlet of Verdoy. The airport is below ' +
-        'class C airspace. </p>'+
-      '</div>'+
-      '</div>';
+ 
 
-  var infowindow = new google.maps.InfoWindow({
+  var infowindow1 = new google.maps.InfoWindow({
       content: contentString1
   });
 
@@ -132,7 +134,7 @@ function initialize() {
       title: 'Albany International Airport'
   });
   google.maps.event.addListener(marker1, 'click', function() {
-    infowindow.open(map,marker1);
+    infowindow1.open(map,marker1);
   });
   
   
@@ -162,7 +164,7 @@ function animateCircle() {
       var icons = line.get('icons');
       icons[0].offset = (count / 2) + '%';
       line.set('icons', icons);
-  }, 320);
+  }, 500);
 }
 //comment 1
 
